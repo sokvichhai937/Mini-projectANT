@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>បង្កើត/កែសម្រួលអត្ថបទ - Blog Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/pages/dashboard.html" class="navbar-brand">📝 Blog System</a>
+                <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+                <ul class="navbar-menu" id="navbarMenu">
+                    <li><a href="/pages/dashboard.html">ផ្ទាំងគ្រប់គ្រង</a></li>
+                    <li><a href="/pages/articles.html" class="active">អត្ថបទ</a></li>
+                    <li><a href="/pages/categories.html">ប្រភេទ</a></li>
+                    <li><a href="/pages/profile.html">ប្រវត្តិរូប</a></li>
+                    <li><a href="#" onclick="logout()">ចាកចេញ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="mb-3">
+                <a href="/pages/my-articles.html" class="btn btn-secondary">← ត្រឡប់ក្រោយ</a>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 id="pageTitle">បង្កើតអត្ថបទថ្មី</h2>
+                </div>
+                <div class="card-body">
+                    <form id="articleForm">
+                        <input type="hidden" id="articleId">
+                        
+                        <!-- Thumbnail Upload -->
+                        <div class="form-group">
+                            <label class="form-label">រូបភាពអត្ថបទ</label>
+                            <div id="thumbnailPreview" style="display: none;">
+                                <img id="thumbnailImage" src="" alt="Thumbnail" style="max-width: 300px; max-height: 200px; border-radius: var(--border-radius); margin-bottom: 1rem;">
+                                <div>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteThumbnail()">🗑️ លុបរូបភាព</button>
+                                </div>
+                            </div>
+                            <input type="file" id="thumbnailInput" accept="image/*" class="form-control" onchange="previewThumbnail(event)">
+                            <span class="form-text">អត្ថបទអតិបរមា 5MB (JPG, PNG, GIF)</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="title" class="form-label">ចំណងជើង *</label>
+                            <input type="text" id="title" class="form-control" placeholder="បញ្ចូលចំណងជើងអត្ថបទ" required>
+                            <span class="invalid-feedback" id="titleError"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="categoryId" class="form-label">ប្រភេទ *</label>
+                            <select id="categoryId" class="form-control" required>
+                                <option value="">ជ្រើសរើសប្រភេទ</option>
+                            </select>
+                            <span class="invalid-feedback" id="categoryError"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="content" class="form-label">មាតិកា *</label>
+                            <textarea id="content" class="form-control" rows="15" placeholder="សរសេរមាតិកាអត្ថបទ..." required></textarea>
+                            <span class="invalid-feedback" id="contentError"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg" id="saveBtn">
+                                💾 រក្សាទុក
+                            </button>
+                            <a href="/pages/my-articles.html" class="btn btn-secondary btn-lg">បោះបង់</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Blog Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        function toggleMenu() {
+            document.getElementById('navbarMenu').classList.toggle('active');
+        }
+        
+        let currentArticleId = null;
+        let thumbnailFile = null;
+        let existingThumbnail = null;
+        
+        // Load categories for dropdown
+        async function loadCategories() {
+            try {
+                const response = await categoriesAPI.getAll({ perPage: 100 });
+                const select = document.getElementById('categoryId');
+                
+                if (response.data && response.data.length > 0) {
+                    const options = response.data.map(category => 
+                        `<option value="${category.id}">${sanitizeHTML(category.name)}</option>`
+                    ).join('');
+                    select.innerHTML = '<option value="">ជ្រើសរើសប្រភេទ</option>' + options;
+                } else {
+                    showToast('សូមបង្កើតប្រភេទជាមុនសិន', 'warning');
+                }
+            } catch (error) {
+                console.error('Load categories error:', error);
+            }
+        }
+        
+        // Load article for editing
+        async function loadArticleForEdit(articleId) {
+            try {
+                const article = await articlesAPI.getById(articleId);
+                
+                document.getElementById('pageTitle').textContent = 'កែសម្រួលអត្ថបទ';
+                document.getElementById('articleId').value = article.id;
+                document.getElementById('title').value = article.title;
+                document.getElementById('categoryId').value = article.categoryId;
+                document.getElementById('content').value = article.content;
+                
+                // Show existing thumbnail
+                if (article.thumbnail) {
+                    existingThumbnail = article.thumbnail;
+                    document.getElementById('thumbnailImage').src = getImageUrl(article.thumbnail);
+                    document.getElementById('thumbnailPreview').style.display = 'block';
+                }
+            } catch (error) {
+                showToast('មិនអាចទាញយកអត្ថបទបាន', 'error');
+                console.error('Load article error:', error);
+            }
+        }
+        
+        // Preview thumbnail
+        function previewThumbnail(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showToast('សូមជ្រើសរើសរូបភាព', 'error');
+                return;
+            }
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('រូបភាពធំពេក (អតិបរមា 5MB)', 'error');
+                return;
+            }
+            
+            thumbnailFile = file;
+            
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('thumbnailImage').src = e.target.result;
+                document.getElementById('thumbnailPreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Delete thumbnail
+        async function deleteThumbnail() {
+            const articleId = document.getElementById('articleId').value;
+            
+            if (articleId && existingThumbnail) {
+                // Delete from server
+                showConfirmation('តើអ្នកពិតជាចង់លុបរូបភាពនេះមែនទេ?', async () => {
+                    try {
+                        await articlesAPI.deleteThumbnail(articleId);
+                        showToast('លុបរូបភាពជោគជ័យ', 'success');
+                        existingThumbnail = null;
+                        document.getElementById('thumbnailPreview').style.display = 'none';
+                        document.getElementById('thumbnailInput').value = '';
+                    } catch (error) {
+                        showToast(error.message || 'មិនអាចលុបរូបភាពបាន', 'error');
+                    }
+                });
+            } else {
+                // Just clear preview
+                thumbnailFile = null;
+                document.getElementById('thumbnailPreview').style.display = 'none';
+                document.getElementById('thumbnailInput').value = '';
+            }
+        }
+        
+        // Handle form submission
+        document.getElementById('articleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear errors
+            document.getElementById('titleError').textContent = '';
+            document.getElementById('categoryError').textContent = '';
+            document.getElementById('contentError').textContent = '';
+            
+            const articleId = document.getElementById('articleId').value;
+            const title = document.getElementById('title').value.trim();
+            const categoryId = document.getElementById('categoryId').value;
+            const content = document.getElementById('content').value.trim();
+            
+            // Validation
+            let hasError = false;
+            
+            if (!title) {
+                document.getElementById('titleError').textContent = 'សូមបញ្ចូលចំណងជើង';
+                hasError = true;
+            }
+            
+            if (!categoryId) {
+                document.getElementById('categoryError').textContent = 'សូមជ្រើសរើសប្រភេទ';
+                hasError = true;
+            }
+            
+            if (!content) {
+                document.getElementById('contentError').textContent = 'សូមបញ្ចូលមាតិកា';
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'កំពុងរក្សាទុក...';
+            
+            try {
+                let savedArticleId = articleId;
+                
+                // Create or update article
+                if (articleId) {
+                    await articlesAPI.update(articleId, {
+                        title,
+                        categoryId: parseInt(categoryId),
+                        content
+                    });
+                    showToast('កែសម្រួលអត្ថបទជោគជ័យ', 'success');
+                } else {
+                    const response = await articlesAPI.create({
+                        title,
+                        categoryId: parseInt(categoryId),
+                        content
+                    });
+                    savedArticleId = response.id;
+                    showToast('បង្កើតអត្ថបទជោគជ័យ', 'success');
+                }
+                
+                // Upload thumbnail if selected
+                if (thumbnailFile && savedArticleId) {
+                    try {
+                        await articlesAPI.uploadThumbnail(savedArticleId, thumbnailFile);
+                    } catch (error) {
+                        showToast('អត្ថបទត្រូវបានរក្សា ប៉ុន្តែមិនអាចបញ្ចូលរូបភាពបាន', 'warning');
+                    }
+                }
+                
+                // Redirect
+                setTimeout(() => {
+                    window.location.href = '/pages/my-articles.html';
+                }, 1000);
+            } catch (error) {
+                showToast(error.message || 'មិនអាចរក្សាទុកបាន', 'error');
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 រក្សាទុក';
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            
+            // Check if editing
+            const articleId = getQueryParam('id');
+            if (articleId) {
+                currentArticleId = articleId;
+                loadArticleForEdit(articleId);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ព័ត៌មានលម្អិតអត្ថបទ - Blog Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .article-detail-img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+        }
+        
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-color);
+        }
+        
+        .article-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/pages/dashboard.html" class="navbar-brand">📝 Blog System</a>
+                <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+                <ul class="navbar-menu" id="navbarMenu">
+                    <li><a href="/pages/dashboard.html">ផ្ទាំងគ្រប់គ្រង</a></li>
+                    <li><a href="/pages/articles.html" class="active">អត្ថបទ</a></li>
+                    <li><a href="/pages/categories.html">ប្រភេទ</a></li>
+                    <li><a href="/pages/profile.html">ប្រវត្តិរូប</a></li>
+                    <li><a href="#" onclick="logout()">ចាកចេញ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="mb-3">
+                <a href="/pages/articles.html" class="btn btn-secondary">← ត្រឡប់ក្រោយ</a>
+            </div>
+            
+            <div class="card" id="articleDetailContainer">
+                <div class="card-body">
+                    <div class="loading-container">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Blog Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        function toggleMenu() {
+            document.getElementById('navbarMenu').classList.toggle('active');
+        }
+        
+        // Load article details
+        async function loadArticleDetail() {
+            const articleId = getQueryParam('id');
+            if (!articleId) {
+                window.location.href = '/pages/articles.html';
+                return;
+            }
+            
+            try {
+                const article = await articlesAPI.getById(articleId);
+                const currentUser = getUserData();
+                const isOwner = currentUser && currentUser.id === article.creatorId;
+                
+                const container = document.getElementById('articleDetailContainer');
+                container.innerHTML = `
+                    ${article.thumbnail ? `<img src="${getImageUrl(article.thumbnail)}" alt="${sanitizeHTML(article.title)}" class="article-detail-img">` : ''}
+                    
+                    <div class="mb-3">
+                        <span class="badge badge-primary">${sanitizeHTML(article.category?.name || 'Uncategorized')}</span>
+                    </div>
+                    
+                    <h1 class="mb-3">${sanitizeHTML(article.title)}</h1>
+                    
+                    <div class="article-meta text-muted mb-4">
+                        <span>📅 ${formatDate(article.createdAt)}</span>
+                        ${article.updatedAt !== article.createdAt ? `<span class="ml-3">✏️ កែសម្រួលថ្ងៃទី ${formatDate(article.updatedAt)}</span>` : ''}
+                    </div>
+                    
+                    ${isOwner ? `
+                    <div class="mb-4">
+                        <a href="/pages/create-article.html?id=${article.id}" class="btn btn-primary">✏️ កែសម្រួល</a>
+                        <button class="btn btn-danger" onclick="deleteArticle(${article.id})">🗑️ លុប</button>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="article-content mb-4">
+                        ${sanitizeHTML(article.content).replace(/\n/g, '<br>')}
+                    </div>
+                    
+                    <div class="article-author">
+                        <div>
+                            <strong>អ្នកនិពន្ធ:</strong> ${sanitizeHTML(article.creator?.firstName || '')} ${sanitizeHTML(article.creator?.lastName || '')}
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                showToast('មិនអាចទាញយកអត្ថបទបាន', 'error');
+                console.error('Load article error:', error);
+            }
+        }
+        
+        // Delete article
+        async function deleteArticle(articleId) {
+            showConfirmation('តើអ្នកពិតជាចង់លុបអត្ថបទនេះមែនទេ?', async () => {
+                try {
+                    await articlesAPI.delete(articleId);
+                    showToast('លុបអត្ថបទជោគជ័យ', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/pages/articles.html';
+                    }, 1000);
+                } catch (error) {
+                    showToast(error.message || 'មិនអាចលុបបាន', 'error');
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadArticleDetail);
+    </script>
+</body>
+</html>

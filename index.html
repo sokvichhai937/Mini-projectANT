@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Management System - ទំព័រដើម</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .hero .btn {
+            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
+        }
+        
+        .features {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover {
+            background-color: var(--light-color);
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-desc {
+            color: var(--text-muted);
+        }
+        
+        @media (max-width: 767px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .hero .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>📝 Blog Management System</h1>
+                <p>ប្រព័ន្ធគ្រប់គ្រងអត្ថបទប្លក់ទំនើប សាមញ្ញ និងប្រកបដោយប្រសិទ្ធភាព</p>
+                <div class="hero-buttons">
+                    <a href="/pages/login.html" class="btn btn-primary btn-lg">ចូលប្រើប្រាស់</a>
+                    <a href="/pages/register.html" class="btn btn-outline-primary btn-lg" style="background-color: white; color: var(--primary-color);">ចុះឈ្មោះ</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="text-center mb-4">មុខងារសំខាន់ៗ</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <div class="feature-title">ប្រព័ន្ធសុវត្ថិភាព</div>
+                    <div class="feature-desc">ការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ និងការគ្រប់គ្រងអ្នកប្រើប្រាស់មានសុវត្ថិភាព</div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-title">គ្រប់គ្រងអត្ថបទ</div>
+                    <div class="feature-desc">បង្កើត កែសម្រួល និងលុបអត្ថបទបានយ៉ាងងាយស្រួល</div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <div class="feature-title">ប្រភេទអត្ថបទ</div>
+                    <div class="feature-desc">រៀបចំអត្ថបទតាមប្រភេទផ្សេងៗគ្នា</div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🖼️</div>
+                    <div class="feature-title">បញ្ចូលរូបភាព</div>
+                    <div class="feature-desc">បន្ថែមរូបភាពសម្រាប់អត្ថបទ និងប្រវត្តិរូប</div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-title">ស្វែងរក & ច្រោះ</div>
+                    <div class="feature-desc">ស្វែងរកអត្ថបទ និងច្រោះតាមប្រភេទ</div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-title">Responsive Design</div>
+                    <div class="feature-desc">ដំណើរការល្អនៅលើគ្រប់ឧបករណ៍</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section style="background-color: var(--light-color); padding: 4rem 0; text-align: center;">
+        <div class="container">
+            <h2 class="mb-3">ត្រៀមខ្លួនរួចហើយឬនៅ?</h2>
+            <p class="text-muted mb-4">ចាប់ផ្តើមគ្រប់គ្រងអត្ថបទរបស់អ្នកថ្ងៃនេះ</p>
+            <a href="/pages/register.html" class="btn btn-primary btn-lg">ចុះឈ្មោះឥឡូវនេះ</a>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Blog Management System. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
+        </div>
+    </footer>
+    
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (isAuthenticated()) {
+            window.location.href = '/pages/dashboard.html';
+        }
+    </script>
+</body>
+</html>

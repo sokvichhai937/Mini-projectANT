@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ផ្ទាំងគ្រប់គ្រង - Blog Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/pages/dashboard.html" class="navbar-brand">📝 Blog System</a>
+                <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+                <ul class="navbar-menu" id="navbarMenu">
+                    <li><a href="/pages/dashboard.html" class="active">ផ្ទាំងគ្រប់គ្រង</a></li>
+                    <li><a href="/pages/articles.html">អត្ថបទ</a></li>
+                    <li><a href="/pages/categories.html">ប្រភេទ</a></li>
+                    <li><a href="/pages/profile.html">ប្រវត្តិរូប</a></li>
+                    <li><a href="#" onclick="logout()">ចាកចេញ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Welcome Header -->
+            <div class="dashboard-header">
+                <h1 class="welcome-message">សូមស្វាគមន៍, <span id="userName">Loading...</span>!</h1>
+                <p class="dashboard-subtitle">គ្រប់គ្រងអត្ថបទ និងប្រភេទរបស់អ្នក</p>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon primary">
+                        📝
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalArticles">0</div>
+                        <div class="stat-label">អត្ថបទសរុប</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon success">
+                        📄
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="myArticles">0</div>
+                        <div class="stat-label">អត្ថបទរបស់ខ្ញុំ</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon warning">
+                        📁
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalCategories">0</div>
+                        <div class="stat-label">ប្រភេទសរុប</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3 class="quick-actions-title">សកម្មភាពរហ័ស</h3>
+                <div class="actions-grid">
+                    <a href="/pages/create-article.html" class="action-card">
+                        <div class="action-card-icon">➕</div>
+                        <div class="action-card-title">បង្កើតអត្ថបទថ្មី</div>
+                        <div class="action-card-desc">សរសេរអត្ថបទថ្មី</div>
+                    </a>
+                    
+                    <a href="/pages/my-articles.html" class="action-card">
+                        <div class="action-card-icon">📄</div>
+                        <div class="action-card-title">អត្ថបទរបស់ខ្ញុំ</div>
+                        <div class="action-card-desc">មើលអត្ថបទរបស់អ្នក</div>
+                    </a>
+                    
+                    <a href="/pages/categories.html" class="action-card">
+                        <div class="action-card-icon">📁</div>
+                        <div class="action-card-title">គ្រប់គ្រងប្រភេទ</div>
+                        <div class="action-card-desc">បន្ថែម កែសម្រួល ប្រភេទ</div>
+                    </a>
+                    
+                    <a href="/pages/articles.html" class="action-card">
+                        <div class="action-card-icon">🔍</div>
+                        <div class="action-card-title">រកមើលអត្ថបទ</div>
+                        <div class="action-card-desc">អានអត្ថបទទាំងអស់</div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Recent Articles -->
+            <div class="recent-section">
+                <div class="recent-section-title">
+                    <span>អត្ថបទថ្មីៗ</span>
+                    <a href="/pages/articles.html">មើលទាំងអស់ →</a>
+                </div>
+                <div class="article-list" id="recentArticles">
+                    <div class="loading-container">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Blog Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        function toggleMenu() {
+            document.getElementById('navbarMenu').classList.toggle('active');
+        }
+        
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                // Load user info
+                const userData = getUserData();
+                if (userData) {
+                    document.getElementById('userName').textContent = `${userData.firstName} ${userData.lastName}`;
+                }
+                
+                // Load stats
+                const [articlesResponse, myArticlesResponse, categoriesResponse] = await Promise.all([
+                    articlesAPI.getAll({ perPage: 100 }),
+                    articlesAPI.getOwn({ perPage: 100 }),
+                    categoriesAPI.getAll({ perPage: 100 })
+                ]);
+                
+                document.getElementById('totalArticles').textContent = articlesResponse.data?.length || 0;
+                document.getElementById('myArticles').textContent = myArticlesResponse.data?.length || 0;
+                document.getElementById('totalCategories').textContent = categoriesResponse.data?.length || 0;
+                
+                // Load recent articles
+                const recentArticles = articlesResponse.data?.slice(0, 5) || [];
+                const container = document.getElementById('recentArticles');
+                
+                if (recentArticles.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-text">មិនមានអត្ថបទ</div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = recentArticles.map(article => `
+                        <a href="/pages/article-detail.html?id=${article.id}" class="article-item">
+                            ${article.thumbnail ? `
+                                <img src="${getImageUrl(article.thumbnail)}" alt="${sanitizeHTML(article.title)}" class="article-thumbnail">
+                            ` : `
+                                <div class="article-thumbnail" style="background-color: var(--light-color); display: flex; align-items: center; justify-content: center;">
+                                    <span style="font-size: 2rem;">📄</span>
+                                </div>
+                            `}
+                            <div class="article-info">
+                                <div class="article-title">${sanitizeHTML(truncateText(article.title, 60))}</div>
+                                <div class="article-meta">
+                                    <span>📁 ${sanitizeHTML(article.category?.name || 'Uncategorized')}</span>
+                                    <span>👤 ${sanitizeHTML(article.creator?.firstName || '')} ${sanitizeHTML(article.creator?.lastName || '')}</span>
+                                    <span>📅 ${formatDate(article.createdAt)}</span>
+                                </div>
+                            </div>
+                        </a>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Load dashboard error:', error);
+                showToast('មិនអាចទាញយកព័ត៌មានបាន', 'error');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>អត្ថបទរបស់ខ្ញុំ - Blog Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/pages/dashboard.html" class="navbar-brand">📝 Blog System</a>
+                <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+                <ul class="navbar-menu" id="navbarMenu">
+                    <li><a href="/pages/dashboard.html">ផ្ទាំងគ្រប់គ្រង</a></li>
+                    <li><a href="/pages/articles.html" class="active">អត្ថបទ</a></li>
+                    <li><a href="/pages/categories.html">ប្រភេទ</a></li>
+                    <li><a href="/pages/profile.html">ប្រវត្តិរូប</a></li>
+                    <li><a href="#" onclick="logout()">ចាកចេញ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>អត្ថបទរបស់ខ្ញុំ</h1>
+                <div>
+                    <a href="/pages/articles.html" class="btn btn-secondary">📄 អត្ថបទទាំងអស់</a>
+                    <a href="/pages/create-article.html" class="btn btn-primary">➕ បង្កើតអត្ថបទថ្មី</a>
+                </div>
+            </div>
+            
+            <!-- Search -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" class="form-control" placeholder="ស្វែងរកអត្ថបទរបស់ខ្ញុំ...">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- My Articles List -->
+            <div id="myArticlesContainer">
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination" id="paginationContainer"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Blog Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        function toggleMenu() {
+            document.getElementById('navbarMenu').classList.toggle('active');
+        }
+        
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentSearch = '';
+        
+        // Load my articles
+        async function loadMyArticles() {
+            try {
+                const container = document.getElementById('myArticlesContainer');
+                container.innerHTML = '<div class="loading-container"><div class="spinner"></div></div>';
+                
+                const response = await articlesAPI.getOwn({
+                    search: currentSearch,
+                    page: currentPage,
+                    perPage: 10,
+                    sortBy: 'createdAt',
+                    sortDir: 'desc'
+                });
+                
+                const articles = response.data || [];
+                
+                if (articles.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📄</div>
+                            <div class="empty-state-text">អ្នកមិនទាន់មានអត្ថបទ</div>
+                            <a href="/pages/create-article.html" class="btn btn-primary mt-3">បង្កើតអត្ថបទថ្មី</a>
+                        </div>
+                    `;
+                    document.getElementById('paginationContainer').innerHTML = '';
+                    return;
+                }
+                
+                // Render articles
+                container.innerHTML = articles.map(article => `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-md-3">
+                                    ${article.thumbnail ? `
+                                        <img src="${getImageUrl(article.thumbnail)}" alt="${sanitizeHTML(article.title)}" style="width: 100%; height: 150px; object-fit: cover; border-radius: var(--border-radius);">
+                                    ` : `
+                                        <div style="width: 100%; height: 150px; background-color: var(--light-color); display: flex; align-items: center; justify-content: center; border-radius: var(--border-radius);">
+                                            <span style="font-size: 3rem;">📄</span>
+                                        </div>
+                                    `}
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <div class="mb-2">
+                                        <span class="badge badge-primary">${sanitizeHTML(article.category?.name || 'Uncategorized')}</span>
+                                    </div>
+                                    <h4>${sanitizeHTML(article.title)}</h4>
+                                    <p class="text-muted">${sanitizeHTML(truncateText(article.content, 150))}</p>
+                                    <div class="article-meta text-muted mb-3" style="font-size: 0.875rem;">
+                                        <span>📅 ${formatDate(article.createdAt)}</span>
+                                        ${article.updatedAt !== article.createdAt ? `<span class="ml-3">✏️ ${formatDate(article.updatedAt)}</span>` : ''}
+                                    </div>
+                                    <div class="action-buttons">
+                                        <a href="/pages/article-detail.html?id=${article.id}" class="btn btn-sm btn-secondary">👁️ មើល</a>
+                                        <a href="/pages/create-article.html?id=${article.id}" class="btn btn-sm btn-primary">✏️ កែសម្រួល</a>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteMyArticle(${article.id})">🗑️ លុប</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Update pagination
+                totalPages = response.pages || 1;
+                renderPagination();
+            } catch (error) {
+                showToast('មិនអាចទាញយកអត្ថបទបាន', 'error');
+                console.error('Load my articles error:', error);
+            }
+        }
+        
+        // Render pagination
+        function renderPagination() {
+            const container = document.getElementById('paginationContainer');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            container.innerHTML = `
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    ← មុន
+                </button>
+                <span>ទំព័រ ${currentPage} / ${totalPages}</span>
+                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    បន្ទាប់ →
+                </button>
+            `;
+        }
+        
+        // Change page
+        function changePage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            loadMyArticles();
+        }
+        
+        // Delete article
+        async function deleteMyArticle(articleId) {
+            showConfirmation('តើអ្នកពិតជាចង់លុបអត្ថបទនេះមែនទេ?', async () => {
+                try {
+                    await articlesAPI.delete(articleId);
+                    showToast('លុបអត្ថបទជោគជ័យ', 'success');
+                    loadMyArticles();
+                } catch (error) {
+                    showToast(error.message || 'មិនអាចលុបបាន', 'error');
+                }
+            });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMyArticles();
+            
+            // Search
+            let searchTimeout;
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentSearch = e.target.value;
+                    currentPage = 1;
+                    loadMyArticles();
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
