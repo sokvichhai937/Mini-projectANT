@@ -4,136 +4,245 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ផ្ទាំងគ្រប់គ្រង - Blog Management System</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/sidebar.css">
     <link rel="stylesheet" href="../css/dashboard.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-content">
-                <a href="/pages/dashboard.html" class="navbar-brand">📝 Blog System</a>
-                <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
-                <ul class="navbar-menu" id="navbarMenu">
-                    <li><a href="/pages/dashboard.html" class="active">ផ្ទាំងគ្រប់គ្រង</a></li>
-                    <li><a href="/pages/articles.html">អត្ថបទ</a></li>
-                    <li><a href="/pages/categories.html">ប្រភេទ</a></li>
-                    <li><a href="/pages/profile.html">ប្រវត្តិរូប</a></li>
-                    <li><a href="#" onclick="logout()">ចាកចេញ</a></li>
-                </ul>
-            </div>
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
+    <!-- Dark Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/pages/dashboard.html" class="sidebar-brand">
+                <i class="bi bi-journal-text"></i>
+                Blog
+            </a>
         </div>
-    </nav>
-
-    <main>
-        <div class="container">
+        
+        <nav class="sidebar-menu">
+            <div class="sidebar-section-title">ADMIN</div>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="/pages/dashboard.html" class="nav-link active">
+                        <i class="bi bi-speedometer2"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="has-submenu">
+                    <a href="#" class="nav-link submenu-toggle" onclick="toggleSubmenu(event)">
+                        <span><i class="bi bi-file-text"></i> My Article</span>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="/pages/articles.html" class="nav-link">All Articles</a></li>
+                        <li><a href="/pages/my-articles.html" class="nav-link">My Articles</a></li>
+                        <li><a href="/pages/create-article.html" class="nav-link">Create Article</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/pages/categories.html" class="nav-link">
+                        <i class="bi bi-tags"></i>
+                        Categories
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link logout" onclick="handleLogout(event)">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <nav class="top-navbar">
+            <button class="navbar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="user-dropdown">
+                <img src="https://ui-avatars.com/api/?name=User&background=4299e1&color=fff" alt="User Avatar" class="user-avatar" id="userAvatar">
+                <div class="user-info">
+                    <div class="user-name" id="userName">Loading...</div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Dashboard Content -->
+        <div class="container-fluid p-4">
             <!-- Welcome Header -->
-            <div class="dashboard-header">
-                <h1 class="welcome-message">សូមស្វាគមន៍, <span id="userName">Loading...</span>!</h1>
-                <p class="dashboard-subtitle">គ្រប់គ្រងអត្ថបទ និងប្រភេទរបស់អ្នក</p>
+            <div class="mb-4">
+                <h1 class="h2 fw-bold" id="welcomeMessage">សូមស្វាគមន៍, <span id="userDisplayName">Loading...</span>!</h1>
             </div>
             
             <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon primary">
-                        📝
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="totalArticles">0</div>
-                        <div class="stat-label">អត្ថបទសរុប</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon success">
-                        📄
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="myArticles">0</div>
-                        <div class="stat-label">អត្ថបទរបស់ខ្ញុំ</div>
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-shrink-0 bg-primary bg-gradient text-white rounded-3 p-3 me-3">
+                                <i class="bi bi-file-text fs-1"></i>
+                            </div>
+                            <div>
+                                <h2 class="h3 mb-1 fw-bold" id="totalArticles">0</h2>
+                                <p class="text-muted mb-0">Total Articles</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="stat-card">
-                    <div class="stat-icon warning">
-                        📁
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-shrink-0 bg-success bg-gradient text-white rounded-3 p-3 me-3">
+                                <i class="bi bi-file-earmark-person fs-1"></i>
+                            </div>
+                            <div>
+                                <h2 class="h3 mb-1 fw-bold" id="myArticles">0</h2>
+                                <p class="text-muted mb-0">My Articles</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="totalCategories">0</div>
-                        <div class="stat-label">ប្រភេទសរុប</div>
+                </div>
+                
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-shrink-0 bg-warning bg-gradient text-white rounded-3 p-3 me-3">
+                                <i class="bi bi-tags fs-1"></i>
+                            </div>
+                            <div>
+                                <h2 class="h3 mb-1 fw-bold" id="totalCategories">0</h2>
+                                <p class="text-muted mb-0">Total Categories</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- Quick Actions -->
-            <div class="quick-actions">
-                <h3 class="quick-actions-title">សកម្មភាពរហ័ស</h3>
-                <div class="actions-grid">
-                    <a href="/pages/create-article.html" class="action-card">
-                        <div class="action-card-icon">➕</div>
-                        <div class="action-card-title">បង្កើតអត្ថបទថ្មី</div>
-                        <div class="action-card-desc">សរសេរអត្ថបទថ្មី</div>
-                    </a>
-                    
-                    <a href="/pages/my-articles.html" class="action-card">
-                        <div class="action-card-icon">📄</div>
-                        <div class="action-card-title">អត្ថបទរបស់ខ្ញុំ</div>
-                        <div class="action-card-desc">មើលអត្ថបទរបស់អ្នក</div>
-                    </a>
-                    
-                    <a href="/pages/categories.html" class="action-card">
-                        <div class="action-card-icon">📁</div>
-                        <div class="action-card-title">គ្រប់គ្រងប្រភេទ</div>
-                        <div class="action-card-desc">បន្ថែម កែសម្រួល ប្រភេទ</div>
-                    </a>
-                    
-                    <a href="/pages/articles.html" class="action-card">
-                        <div class="action-card-icon">🔍</div>
-                        <div class="action-card-title">រកមើលអត្ថបទ</div>
-                        <div class="action-card-desc">អានអត្ថបទទាំងអស់</div>
-                    </a>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold mb-3">Quick Actions</h3>
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <a href="/pages/create-article.html" class="btn btn-outline-primary w-100 py-3 text-start">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                <div>
+                                    <div class="fw-bold">Create Article</div>
+                                    <small class="text-muted">Write new post</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <a href="/pages/articles.html" class="btn btn-outline-success w-100 py-3 text-start">
+                                <i class="bi bi-file-text me-2"></i>
+                                <div>
+                                    <div class="fw-bold">My Articles</div>
+                                    <small class="text-muted">View your posts</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <a href="/pages/categories.html" class="btn btn-outline-warning w-100 py-3 text-start">
+                                <i class="bi bi-tags me-2"></i>
+                                <div>
+                                    <div class="fw-bold">Manage Categories</div>
+                                    <small class="text-muted">Add, edit categories</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <a href="/pages/articles.html" class="btn btn-outline-info w-100 py-3 text-start">
+                                <i class="bi bi-search me-2"></i>
+                                <div>
+                                    <div class="fw-bold">Browse Articles</div>
+                                    <small class="text-muted">Read all posts</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <!-- Recent Articles -->
-            <div class="recent-section">
-                <div class="recent-section-title">
-                    <span>អត្ថបទថ្មីៗ</span>
-                    <a href="/pages/articles.html">មើលទាំងអស់ →</a>
-                </div>
-                <div class="article-list" id="recentArticles">
-                    <div class="loading-container">
-                        <div class="spinner"></div>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h5 fw-bold mb-0">Recent Articles</h3>
+                        <a href="/pages/articles.html" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div id="recentArticles">
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Blog Management System. All rights reserved.</p>
-        </div>
-    </footer>
-
+    </div>
+    
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
     <script src="../js/config.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     
     <script>
-        function toggleMenu() {
-            document.getElementById('navbarMenu').classList.toggle('active');
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        }
+        
+        // Submenu toggle
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parent = event.currentTarget.closest('.has-submenu');
+            parent.classList.toggle('open');
+        }
+        
+        // Handle logout
+        async function handleLogout(event) {
+            event.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                logout();
+            }
         }
         
         // Load dashboard data
         async function loadDashboard() {
             try {
+                // Check authentication
+                if (!isAuthenticated()) {
+                    window.location.href = '/index.html';
+                    return;
+                }
+                
                 // Load user info
                 const userData = getUserData();
                 if (userData) {
-                    document.getElementById('userName').textContent = `${userData.firstName} ${userData.lastName}`;
+                    const fullName = `${userData.firstName} ${userData.lastName}`;
+                    document.getElementById('userName').textContent = fullName;
+                    document.getElementById('userDisplayName').textContent = fullName;
+                    
+                    // Update avatar
+                    const avatar = document.getElementById('userAvatar');
+                    avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=4299e1&color=fff`;
                 }
                 
                 // Load stats
@@ -153,34 +262,65 @@
                 
                 if (recentArticles.length === 0) {
                     container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-text">មិនមានអត្ថបទ</div>
+                        <div class="alert alert-info text-center" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No articles found
                         </div>
                     `;
                 } else {
                     container.innerHTML = recentArticles.map(article => `
-                        <a href="/pages/article-detail.html?id=${article.id}" class="article-item">
-                            ${article.thumbnail ? `
-                                <img src="${getImageUrl(article.thumbnail)}" alt="${sanitizeHTML(article.title)}" class="article-thumbnail">
-                            ` : `
-                                <div class="article-thumbnail" style="background-color: var(--light-color); display: flex; align-items: center; justify-content: center;">
-                                    <span style="font-size: 2rem;">📄</span>
-                                </div>
-                            `}
-                            <div class="article-info">
-                                <div class="article-title">${sanitizeHTML(truncateText(article.title, 60))}</div>
-                                <div class="article-meta">
-                                    <span>📁 ${sanitizeHTML(article.category?.name || 'Uncategorized')}</span>
-                                    <span>👤 ${sanitizeHTML(article.creator?.firstName || '')} ${sanitizeHTML(article.creator?.lastName || '')}</span>
-                                    <span>📅 ${formatDate(article.createdAt)}</span>
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-auto">
+                                        ${article.thumbnail ? `
+                                            <img src="${getImageUrl(article.thumbnail)}" 
+                                                 alt="${sanitizeHTML(article.title)}" 
+                                                 class="rounded"
+                                                 style="width: 80px; height: 80px; object-fit: cover;">
+                                        ` : `
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                                 style="width: 80px; height: 80px;">
+                                                <i class="bi bi-file-text fs-2 text-muted"></i>
+                                            </div>
+                                        `}
+                                    </div>
+                                    <div class="col">
+                                        <h5 class="card-title mb-2">
+                                            <a href="/pages/article-detail.html?id=${article.id}" 
+                                               class="text-decoration-none text-dark">
+                                                ${sanitizeHTML(article.title)}
+                                            </a>
+                                        </h5>
+                                        <div class="text-muted small">
+                                            <span class="me-3">
+                                                <i class="bi bi-folder me-1"></i>
+                                                ${sanitizeHTML(article.category?.name || 'Uncategorized')}
+                                            </span>
+                                            <span class="me-3">
+                                                <i class="bi bi-person me-1"></i>
+                                                ${sanitizeHTML(article.creator?.firstName || '')} ${sanitizeHTML(article.creator?.lastName || '')}
+                                            </span>
+                                            <span>
+                                                <i class="bi bi-calendar me-1"></i>
+                                                ${formatDate(article.createdAt)}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     `).join('');
                 }
             } catch (error) {
                 console.error('Load dashboard error:', error);
-                showToast('មិនអាចទាញយកព័ត៌មានបាន', 'error');
+                const container = document.getElementById('recentArticles');
+                container.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Failed to load dashboard data
+                    </div>
+                `;
             }
         }
         

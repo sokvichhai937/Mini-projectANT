@@ -45,23 +45,73 @@ function requireAuth() {
     return true;
 }
 
-// Show toast notification
+// Show toast notification (Bootstrap 5 compatible)
 function showToast(message, type = 'info') {
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
+    // Check if Bootstrap is loaded
+    if (typeof bootstrap === 'undefined') {
+        // Fallback to simple alert
+        alert(message);
+        return;
+    }
     
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 100);
+    // Find or create toast container
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '1060';
+        document.body.appendChild(toastContainer);
+    }
     
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(toast);
-        }, 300);
-    }, 3000);
+    // Determine toast colors based on type
+    let bgClass = 'bg-info';
+    let icon = 'ℹ️';
+    let title = 'Info';
+    
+    if (type === 'success') {
+        bgClass = 'bg-success';
+        icon = '✓';
+        title = 'Success';
+    } else if (type === 'error' || type === 'danger') {
+        bgClass = 'bg-danger';
+        icon = '✗';
+        title = 'Error';
+    } else if (type === 'warning') {
+        bgClass = 'bg-warning';
+        icon = '⚠';
+        title = 'Warning';
+    }
+    
+    // Create toast element
+    const toastId = 'toast-' + Date.now();
+    const toastHtml = `
+        <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header ${bgClass} text-white">
+                <strong class="me-auto">${icon} ${title}</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${sanitizeHTML(message)}
+            </div>
+        </div>
+    `;
+    
+    // Add toast to container
+    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+    
+    // Initialize and show toast
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: 3000
+    });
+    
+    toast.show();
+    
+    // Remove toast from DOM after it's hidden
+    toastElement.addEventListener('hidden.bs.toast', () => {
+        toastElement.remove();
+    });
 }
 
 // Show loading spinner
