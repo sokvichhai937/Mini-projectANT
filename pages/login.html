@@ -4,49 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ចូលប្រើប្រាស់ - Blog Management System</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/components.css">
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="../css/auth.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 15px;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem;
+        }
+        
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .auth-logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
+        
+        .auth-logo p {
+            color: #718096;
+            margin-top: 0.5rem;
+        }
+        
+        .btn-dark {
+            background-color: #2d3748;
+            border-color: #2d3748;
+        }
+        
+        .btn-dark:hover {
+            background-color: #1a202c;
+            border-color: #1a202c;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+    </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <div class="auth-header">
-                <h1 class="auth-title">ចូលប្រើប្រាស់</h1>
-                <p class="auth-subtitle">សូមបញ្ចូលព័ត៌មានរបស់អ្នកដើម្បីចូលប្រើប្រាស់</p>
+            <div class="auth-logo">
+                <h1><i class="bi bi-journal-text"></i> Blog</h1>
+                <p>ចូលប្រើប្រាស់ប្រព័ន្ធគ្រប់គ្រងអត្ថបទ</p>
             </div>
             
-            <form id="loginForm" class="auth-form">
-                <div class="form-group">
+            <form id="loginForm">
+                <div class="mb-3">
                     <label for="email" class="form-label">អ៊ីមែល</label>
-                    <input type="email" id="email" class="form-control" placeholder="example@email.com" required>
-                    <span class="invalid-feedback" id="emailError"></span>
+                    <input type="email" class="form-control" id="email" placeholder="example@email.com" required>
+                    <div class="invalid-feedback" id="emailError"></div>
                 </div>
                 
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="password" class="form-label">លេខសម្ងាត់</label>
-                    <div class="password-toggle">
-                        <input type="password" id="password" class="form-control" placeholder="បញ្ចូលលេខសម្ងាត់" required>
-                        <button type="button" class="password-toggle-btn" onclick="togglePassword('password')">👁️</button>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" placeholder="បញ្ចូលលេខសម្ងាត់" required>
+                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                            <i class="bi bi-eye" id="toggleIcon"></i>
+                        </button>
                     </div>
-                    <span class="invalid-feedback" id="passwordError"></span>
+                    <div class="invalid-feedback" id="passwordError"></div>
                 </div>
                 
                 <div class="form-check mb-3">
-                    <input type="checkbox" id="rememberMe" class="form-check-input">
-                    <label for="rememberMe">ចងចាំខ្ញុំ</label>
+                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">
+                        ចងចាំខ្ញុំ
+                    </label>
                 </div>
                 
-                <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginBtn">
-                    ចូលប្រើប្រាស់
+                <button type="submit" class="btn btn-dark w-100 mb-3" id="loginBtn">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>ចូលប្រើប្រាស់
                 </button>
             </form>
             
             <div class="auth-footer">
-                <p>មិនទាន់មានគណនី? <a href="register.html">ចុះឈ្មោះ</a></p>
+                <p class="mb-0">មិនទាន់មានគណនី? <a href="register.html" class="text-decoration-none">ចុះឈ្មោះ</a></p>
             </div>
         </div>
     </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header" id="toastHeader">
+                <strong class="me-auto" id="toastTitle">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastBody"></div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap 5.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="../js/config.js"></script>
     <script src="../js/utils.js"></script>
@@ -54,9 +132,16 @@
     <script src="../js/auth.js"></script>
     <script>
         // Toggle password visibility
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            field.type = field.type === 'password' ? 'text' : 'password';
+        function togglePassword() {
+            const field = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                field.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
         }
         
         // Handle form submission
@@ -66,6 +151,8 @@
             // Clear previous errors
             document.getElementById('emailError').textContent = '';
             document.getElementById('passwordError').textContent = '';
+            document.getElementById('email').classList.remove('is-invalid');
+            document.getElementById('password').classList.remove('is-invalid');
             
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
@@ -74,18 +161,21 @@
             // Validation
             if (!validateEmail(email)) {
                 document.getElementById('emailError').textContent = 'សូមបញ្ចូលអ៊ីមែលត្រឹមត្រូវ';
+                document.getElementById('email').classList.add('is-invalid');
                 return;
             }
             
-            if (!password) {
+            if (!password || password.length < 6) {
                 document.getElementById('passwordError').textContent = 'សូមបញ្ចូលលេខសម្ងាត់';
+                document.getElementById('password').classList.add('is-invalid');
                 return;
             }
             
             // Disable button and show loading
             const loginBtn = document.getElementById('loginBtn');
+            const originalText = loginBtn.innerHTML;
             loginBtn.disabled = true;
-            loginBtn.textContent = 'កំពុងចូល...';
+            loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>កំពុងចូល...';
             
             try {
                 const response = await authAPI.login({ email, password });
@@ -103,9 +193,14 @@
             } catch (error) {
                 showToast(error.message || 'ចូលប្រើប្រាស់បរាជ័យ', 'error');
                 loginBtn.disabled = false;
-                loginBtn.textContent = 'ចូលប្រើប្រាស់';
+                loginBtn.innerHTML = originalText;
             }
         });
+        
+        // Redirect if already logged in
+        if (isAuthenticated()) {
+            window.location.href = '/pages/dashboard.html';
+        }
     </script>
 </body>
 </html>

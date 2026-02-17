@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog Management System - ទំព័រដើម</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/components.css">
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
     <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
         .hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -27,6 +35,7 @@
             font-size: 3rem;
             margin-bottom: 1.5rem;
             color: white;
+            font-weight: 700;
         }
         
         .hero p {
@@ -49,26 +58,21 @@
         
         .features {
             padding: 5rem 0;
-            background-color: white;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            background-color: #f8f9fa;
         }
         
         .feature-card {
             text-align: center;
             padding: 2rem;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            height: 100%;
         }
         
         .feature-card:hover {
-            background-color: var(--light-color);
+            background-color: white;
             transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .feature-icon {
@@ -83,7 +87,20 @@
         }
         
         .feature-desc {
-            color: var(--text-muted);
+            color: #6c757d;
+        }
+        
+        .cta-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        footer {
+            background-color: #2d3748;
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
         }
         
         @media (max-width: 767px) {
@@ -110,11 +127,15 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h1>📝 Blog Management System</h1>
+                <h1><i class="bi bi-journal-text"></i> Blog Management System</h1>
                 <p>ប្រព័ន្ធគ្រប់គ្រងអត្ថបទប្លក់ទំនើប សាមញ្ញ និងប្រកបដោយប្រសិទ្ធភាព</p>
                 <div class="hero-buttons">
-                    <a href="/pages/login.html" class="btn btn-primary btn-lg">ចូលប្រើប្រាស់</a>
-                    <a href="/pages/register.html" class="btn btn-outline-primary btn-lg" style="background-color: white; color: var(--primary-color);">ចុះឈ្មោះ</a>
+                    <a href="/pages/login.html" class="btn btn-primary btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>ចូលប្រើប្រាស់
+                    </a>
+                    <a href="/pages/register.html" class="btn btn-light btn-lg">
+                        <i class="bi bi-person-plus me-2"></i>ចុះឈ្មោះ
+                    </a>
                 </div>
             </div>
         </div>
@@ -123,61 +144,78 @@
     <!-- Features Section -->
     <section class="features">
         <div class="container">
-            <h2 class="text-center mb-4">មុខងារសំខាន់ៗ</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🔐</div>
-                    <div class="feature-title">ប្រព័ន្ធសុវត្ថិភាព</div>
-                    <div class="feature-desc">ការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ និងការគ្រប់គ្រងអ្នកប្រើប្រាស់មានសុវត្ថិភាព</div>
+            <h2 class="text-center mb-5">មុខងារសំខាន់ៗ</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔐</div>
+                        <div class="feature-title">ប្រព័ន្ធសុវត្ថិភាព</div>
+                        <div class="feature-desc">ការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ និងការគ្រប់គ្រងអ្នកប្រើប្រាស់មានសុវត្ថិភាព</div>
+                    </div>
                 </div>
                 
-                <div class="feature-card">
-                    <div class="feature-icon">📝</div>
-                    <div class="feature-title">គ្រប់គ្រងអត្ថបទ</div>
-                    <div class="feature-desc">បង្កើត កែសម្រួល និងលុបអត្ថបទបានយ៉ាងងាយស្រួល</div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">📝</div>
+                        <div class="feature-title">គ្រប់គ្រងអត្ថបទ</div>
+                        <div class="feature-desc">បង្កើត កែសម្រួល និងលុបអត្ថបទបានយ៉ាងងាយស្រួល</div>
+                    </div>
                 </div>
                 
-                <div class="feature-card">
-                    <div class="feature-icon">📁</div>
-                    <div class="feature-title">ប្រភេទអត្ថបទ</div>
-                    <div class="feature-desc">រៀបចំអត្ថបទតាមប្រភេទផ្សេងៗគ្នា</div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">📁</div>
+                        <div class="feature-title">ប្រភេទអត្ថបទ</div>
+                        <div class="feature-desc">រៀបចំអត្ថបទតាមប្រភេទផ្សេងៗគ្នា</div>
+                    </div>
                 </div>
                 
-                <div class="feature-card">
-                    <div class="feature-icon">🖼️</div>
-                    <div class="feature-title">បញ្ចូលរូបភាព</div>
-                    <div class="feature-desc">បន្ថែមរូបភាពសម្រាប់អត្ថបទ និងប្រវត្តិរូប</div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">🖼️</div>
+                        <div class="feature-title">បញ្ចូលរូបភាព</div>
+                        <div class="feature-desc">បន្ថែមរូបភាពសម្រាប់អត្ថបទ និងប្រវត្តិរូប</div>
+                    </div>
                 </div>
                 
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <div class="feature-title">ស្វែងរក & ច្រោះ</div>
-                    <div class="feature-desc">ស្វែងរកអត្ថបទ និងច្រោះតាមប្រភេទ</div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <div class="feature-title">ស្វែងរក & ច្រោះ</div>
+                        <div class="feature-desc">ស្វែងរកអត្ថបទ និងច្រោះតាមប្រភេទ</div>
+                    </div>
                 </div>
                 
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <div class="feature-title">Responsive Design</div>
-                    <div class="feature-desc">ដំណើរការល្អនៅលើគ្រប់ឧបករណ៍</div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-title">Responsive Design</div>
+                        <div class="feature-desc">ដំណើរការល្អនៅលើគ្រប់ឧបករណ៍</div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
     
     <!-- CTA Section -->
-    <section style="background-color: var(--light-color); padding: 4rem 0; text-align: center;">
+    <section class="cta-section">
         <div class="container">
             <h2 class="mb-3">ត្រៀមខ្លួនរួចហើយឬនៅ?</h2>
             <p class="text-muted mb-4">ចាប់ផ្តើមគ្រប់គ្រងអត្ថបទរបស់អ្នកថ្ងៃនេះ</p>
-            <a href="/pages/register.html" class="btn btn-primary btn-lg">ចុះឈ្មោះឥឡូវនេះ</a>
+            <a href="/pages/register.html" class="btn btn-primary btn-lg">
+                <i class="bi bi-person-plus me-2"></i>ចុះឈ្មោះឥឡូវនេះ
+            </a>
         </div>
     </section>
     
     <footer>
         <div class="container">
-            <p>&copy; 2024 Blog Management System. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
+            <p class="mb-0">&copy; 2024 Blog Management System. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
         </div>
     </footer>
+    
+    <!-- Bootstrap 5.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
