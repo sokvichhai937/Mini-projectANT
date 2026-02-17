@@ -2,7 +2,7 @@
 
 ## 📖 ការពិពណ៌នា
 
-Blog Management System គឺជាកម្មវិធី Frontend Application ពេញលេញដែលបង្កើតឡើងដោយប្រើ HTML, CSS, និង JavaScript ធម្មតា (គ្មាន Framework) ។ ប្រព័ន្ធនេះអនុញ្ញាតឱ្យអ្នកប្រើប្រាស់អាចគ្រប់គ្រងអត្ថបទប្លក់ បង្កើតប្រភេទ និងអាចបញ្ចូលរូបភាពបានយ៉ាងងាយស្រួល។
+Blog Management System គឺជាកម្មវិធី Frontend Application ពេញលេញដែលបង្កើតឡើងដោយប្រើ **HTML5, Bootstrap 5, និង JavaScript** ។ ប្រព័ន្ធនេះអនុញ្ញាតឱ្យអ្នកប្រើប្រាស់អាចគ្រប់គ្រងអត្ថបទប្លក់ បង្កើតប្រភេទ និងអាចបញ្ចូលរូបភាពបានយ៉ាងងាយស្រួល។
 
 ## ✨ មុខងារសំខាន់ៗ
 
@@ -62,7 +62,8 @@ Blog Management System គឺជាកម្មវិធី Frontend Application
 ## 🛠️ បច្ចេកវិទ្យាដែលប្រើប្រាស់
 
 - **HTML5**: រចនាសម្ព័ន្ធទំព័រ
-- **CSS3**: ការរចនាទំនើប និង Responsive Design
+- **Bootstrap 5.3**: CSS Framework សម្រាប់ UI Components
+- **Bootstrap Icons**: Icon Library
 - **JavaScript (Vanilla)**: Logic និងការទំនាក់ទំនងជាមួយ API
 - **REST API**: `https://blogs2.csm.linkpc.net/api/v1`
 - **LocalStorage**: ការរក្សាទុក Token និងព័ត៌មានអ្នកប្រើប្រាស់
@@ -84,6 +85,7 @@ Mini-projectANT/
 │   └── my-articles.html    # អត្ថបទរបស់ខ្ញុំ
 ├── css/
 │   ├── style.css           # Global Styles
+│   ├── sidebar.css         # Dark Sidebar Navigation
 │   ├── auth.css            # Authentication Pages Styles
 │   ├── dashboard.css       # Dashboard Styles
 │   └── components.css      # Reusable Components
@@ -203,8 +205,19 @@ Import file នេះទៅក្នុង Postman ដើម្បីសាក�
 ## 👨‍💻 អ្នកអភិវឌ្ឍន៍
 
 - **ឈ្មោះគម្រោង**: Blog Management System
-- **អ្នកបង្កើត**: ANT Team
+- **អ្នកបង្កើត**: ANT Team / Sok Vichhai (Siv Punleu)
 - **GitHub**: [sokvichhai937](https://github.com/sokvichhai937)
+
+## 🧪 គណនីសាកល្បង (Test Account)
+
+សម្រាប់សាកល្បងប្រព័ន្ធ អ្នកអាចប្រើគណនីខាងក្រោម:
+
+```
+Email: sivpunleu174@gmail.com
+Password: Khmer00008888!
+```
+
+**សូមកត់សម្គាល់**: នេះជាគណនីសាកល្បងសម្រាប់ Demo ប៉ុណ្ណោះ។
 
 ## 📝 License
 
