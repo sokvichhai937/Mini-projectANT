@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ចូលប្រើប្រាស់ - Blog Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">ចូលប្រើប្រាស់</h1>
+                <p class="auth-subtitle">សូមបញ្ចូលព័ត៌មានរបស់អ្នកដើម្បីចូលប្រើប្រាស់</p>
+            </div>
+            
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">អ៊ីមែល</label>
+                    <input type="email" id="email" class="form-control" placeholder="example@email.com" required>
+                    <span class="invalid-feedback" id="emailError"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">លេខសម្ងាត់</label>
+                    <div class="password-toggle">
+                        <input type="password" id="password" class="form-control" placeholder="បញ្ចូលលេខសម្ងាត់" required>
+                        <button type="button" class="password-toggle-btn" onclick="togglePassword('password')">👁️</button>
+                    </div>
+                    <span class="invalid-feedback" id="passwordError"></span>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="rememberMe" class="form-check-input">
+                    <label for="rememberMe">ចងចាំខ្ញុំ</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginBtn">
+                    ចូលប្រើប្រាស់
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>មិនទាន់មានគណនី? <a href="register.html">ចុះឈ្មោះ</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
+        
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear previous errors
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Validation
+            if (!validateEmail(email)) {
+                document.getElementById('emailError').textContent = 'សូមបញ្ចូលអ៊ីមែលត្រឹមត្រូវ';
+                return;
+            }
+            
+            if (!password) {
+                document.getElementById('passwordError').textContent = 'សូមបញ្ចូលលេខសម្ងាត់';
+                return;
+            }
+            
+            // Disable button and show loading
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'កំពុងចូល...';
+            
+            try {
+                const response = await authAPI.login({ email, password });
+                
+                // Save token and user data
+                setToken(response.token);
+                setUserData(response.user);
+                
+                showToast('ចូលប្រើប្រាស់ជោគជ័យ!', 'success');
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = '/pages/dashboard.html';
+                }, 500);
+            } catch (error) {
+                showToast(error.message || 'ចូលប្រើប្រាស់បរាជ័យ', 'error');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'ចូលប្រើប្រាស់';
+            }
+        });
+    </script>
+</body>
+</html>
