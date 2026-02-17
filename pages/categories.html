@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>គ្រប់គ្រងប្រភេទ - Blog Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/pages/dashboard.html" class="navbar-brand">📝 Blog System</a>
+                <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+                <ul class="navbar-menu" id="navbarMenu">
+                    <li><a href="/pages/dashboard.html">ផ្ទាំងគ្រប់គ្រង</a></li>
+                    <li><a href="/pages/articles.html">អត្ថបទ</a></li>
+                    <li><a href="/pages/categories.html" class="active">ប្រភេទ</a></li>
+                    <li><a href="/pages/profile.html">ប្រវត្តិរូប</a></li>
+                    <li><a href="#" onclick="logout()">ចាកចេញ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>គ្រប់គ្រងប្រភេទ</h1>
+                <button class="btn btn-primary" onclick="openCategoryModal()">
+                    ➕ បង្កើតប្រភេទថ្មី
+                </button>
+            </div>
+            
+            <!-- Search and Filter -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="search-bar">
+                                <input type="text" id="searchInput" class="form-control" placeholder="ស្វែងរកប្រភេទ...">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <select id="sortBy" class="form-control">
+                                <option value="name">តាមឈ្មោះ</option>
+                                <option value="createdAt">តាមកាលបរិច្ឆេទ</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <select id="sortDir" class="form-control">
+                                <option value="ASC">ឡើង</option>
+                                <option value="DESC">ចុះ</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Categories Table -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ល.រ</th>
+                                    <th>ឈ្មោះប្រភេទ</th>
+                                    <th>ពណ៌នា</th>
+                                    <th>កាលបរិច្ឆេទបង្កើត</th>
+                                    <th>សកម្មភាព</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div class="spinner"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination" id="paginationContainer"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">បង្កើតប្រភេទថ្មី</h3>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId">
+                    <div class="form-group">
+                        <label for="categoryName" class="form-label">ឈ្មោះប្រភេទ</label>
+                        <input type="text" id="categoryName" class="form-control" required>
+                        <span class="invalid-feedback" id="categoryNameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryDescription" class="form-label">ពណ៌នា</label>
+                        <textarea id="categoryDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeCategoryModal()">បោះបង់</button>
+                <button class="btn btn-primary" onclick="saveCategory()" id="saveCategoryBtn">រក្សាទុក</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Blog Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/categories.js"></script>
+    
+    <script>
+        function toggleMenu() {
+            document.getElementById('navbarMenu').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

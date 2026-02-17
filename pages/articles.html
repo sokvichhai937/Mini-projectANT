@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>អត្ថបទទាំងអស់ - Blog Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/pages/dashboard.html" class="navbar-brand">📝 Blog System</a>
+                <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+                <ul class="navbar-menu" id="navbarMenu">
+                    <li><a href="/pages/dashboard.html">ផ្ទាំងគ្រប់គ្រង</a></li>
+                    <li><a href="/pages/articles.html" class="active">អត្ថបទ</a></li>
+                    <li><a href="/pages/categories.html">ប្រភេទ</a></li>
+                    <li><a href="/pages/profile.html">ប្រវត្តិរូប</a></li>
+                    <li><a href="#" onclick="logout()">ចាកចេញ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>អត្ថបទទាំងអស់</h1>
+                <div>
+                    <a href="/pages/my-articles.html" class="btn btn-secondary">📄 អត្ថបទរបស់ខ្ញុំ</a>
+                    <a href="/pages/create-article.html" class="btn btn-primary">➕ បង្កើតអត្ថបទថ្មី</a>
+                </div>
+            </div>
+            
+            <!-- Search and Filter -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-8">
+                            <div class="search-bar">
+                                <input type="text" id="searchInput" class="form-control" placeholder="ស្វែងរកអត្ថបទ...">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <select id="categoryFilter" class="form-control">
+                                <option value="">ប្រភេទទាំងអស់</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Articles Grid -->
+            <div id="articlesContainer">
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination" id="paginationContainer"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Blog Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/articles.js"></script>
+    
+    <script>
+        function toggleMenu() {
+            document.getElementById('navbarMenu').classList.toggle('active');
+        }
+        
+        // Load articles on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadArticles();
+            loadCategoryFilter();
+        });
+    </script>
+</body>
+</html>

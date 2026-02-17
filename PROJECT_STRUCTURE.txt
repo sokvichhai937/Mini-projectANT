@@ -1,0 +1,113 @@
+📁 Mini-projectANT - Blog Management System
+│
+├── 📄 index.html                          # Landing/Homepage (191 lines)
+├── 📄 README.md                           # Main documentation in Khmer (337 lines)
+├── 📄 TESTING.md                          # Testing guide (179 lines)
+├── 📄 IMPLEMENTATION_SUMMARY.md           # Implementation summary (255 lines)
+├── 📄 .gitignore                          # Git ignore rules
+│
+├── 📁 pages/                              # Application Pages (1,451 lines total)
+│   ├── 📄 login.html                      # Login page (81 lines)
+│   ├── 📄 register.html                   # Registration page (116 lines)
+│   ├── 📄 dashboard.html                  # Main dashboard (142 lines)
+│   ├── 📄 profile.html                    # Profile management (99 lines)
+│   ├── 📄 categories.html                 # Categories CRUD (106 lines)
+│   ├── 📄 articles.html                   # Articles list (74 lines)
+│   ├── 📄 article-detail.html             # Article detail view (123 lines)
+│   ├── 📄 my-articles.html                # User's articles (168 lines)
+│   └── 📄 create-article.html             # Create/edit article (243 lines)
+│
+├── 📁 css/                                # Stylesheets (1,152 lines total)
+│   ├── 📄 style.css                       # Global styles (165 lines)
+│   ├── 📄 components.css                  # Reusable components (322 lines)
+│   ├── 📄 auth.css                        # Authentication styles (74 lines)
+│   └── 📄 dashboard.css                   # Dashboard styles (175 lines)
+│
+├── 📁 js/                                 # JavaScript Modules (945 lines total)
+│   ├── 📄 config.js                       # API configuration (11 lines)
+│   ├── 📄 utils.js                        # Helper functions (144 lines)
+│   ├── 📄 api.js                          # API service layer (188 lines)
+│   ├── 📄 auth.js                         # Authentication logic (58 lines)
+│   ├── 📄 profile.js                      # Profile management (133 lines)
+│   ├── 📄 categories.js                   # Categories CRUD (198 lines)
+│   └── 📄 articles.js                     # Articles management (147 lines)
+│
+├── 📁 assets/                             # Assets folder
+│   ├── 📁 images/                         # Images directory
+│   │   └── 📄 placeholder.jpg             # Placeholder image
+│   └── 📁 logo/                           # Logo directory
+│
+└── 📁 postman/                            # API Documentation
+    └── 📄 ANT-Mini-Blog-adm.json          # Postman collection (601 lines)
+
+═══════════════════════════════════════════════════════════════════
+
+TOTAL STATISTICS:
+═══════════════════════════════════════════════════════════════════
+📊 HTML Files:        10 files    →  1,642 lines
+📊 CSS Files:          4 files    →  1,152 lines
+📊 JavaScript Files:   7 files    →    945 lines
+📊 Documentation:      3 files    →    666 lines
+�� Other:              2 files    →     60 lines
+───────────────────────────────────────────────────────────────────
+📊 TOTAL:             26 files    →  4,465 lines of code
+
+═══════════════════════════════════════════════════════════════════
+
+KEY FEATURES IMPLEMENTED:
+═══════════════════════════════════════════════════════════════════
+✅ Authentication System (Login, Register, Logout)
+✅ Profile Management (View, Update, Avatar Upload/Delete)
+✅ Categories Management (Full CRUD with Search & Sort)
+✅ Articles Management (Full CRUD with Thumbnail Upload)
+✅ Dashboard with Statistics & Quick Actions
+✅ Responsive Design (Mobile, Tablet, Desktop)
+✅ Modern UI/UX with Animations
+✅ Error Handling & Validation
+✅ API Integration (18 endpoints)
+✅ Comprehensive Documentation (Khmer & English)
+
+═══════════════════════════════════════════════════════════════════
+
+API ENDPOINTS INTEGRATED:
+═══════════════════════════════════════════════════════════════════
+Authentication (4):
+  • POST   /auth/register
+  • POST   /auth/login
+  • DELETE /auth/logout
+  • GET    /auth/profile
+
+Profile (3):
+  • PUT    /profile
+  • POST   /profile/avatar
+  • DELETE /profile/avatar
+
+Categories (5):
+  • GET    /categories
+  • GET    /categories/:id
+  • POST   /categories
+  • PUT    /categories/:id
+  • DELETE /categories/:id
+
+Articles (8):
+  • GET    /articles
+  • GET    /articles/own
+  • GET    /articles/by/:creatorId
+  • GET    /articles/:id
+  • POST   /articles
+  • PUT    /articles/:id
+  • DELETE /articles/:id
+  • POST   /articles/:id/thumbnail
+  • DELETE /articles/:id/thumbnail
+
+═══════════════════════════════════════════════════════════════════
+
+TECHNOLOGY STACK:
+═══════════════════════════════════════════════════════════════════
+✓ HTML5       - Semantic markup
+✓ CSS3        - Modern styling with Flexbox & Grid
+✓ JavaScript  - Vanilla ES6+ (no frameworks)
+✓ REST API    - Full integration with backend
+✓ LocalStorage - Token & data persistence
+
+═══════════════════════════════════════════════════════════════════
