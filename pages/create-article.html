@@ -1,108 +1,276 @@
 <!DOCTYPE html>
-<html lang="km">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>បង្កើត/កែសម្រួលអត្ថបទ - Blog Management System</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <title>Create Article - Blog Management System</title>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/sidebar.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-content">
-                <a href="/pages/dashboard.html" class="navbar-brand">📝 Blog System</a>
-                <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
-                <ul class="navbar-menu" id="navbarMenu">
-                    <li><a href="/pages/dashboard.html">ផ្ទាំងគ្រប់គ្រង</a></li>
-                    <li><a href="/pages/articles.html" class="active">អត្ថបទ</a></li>
-                    <li><a href="/pages/categories.html">ប្រភេទ</a></li>
-                    <li><a href="/pages/profile.html">ប្រវត្តិរូប</a></li>
-                    <li><a href="#" onclick="logout()">ចាកចេញ</a></li>
-                </ul>
-            </div>
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
+    <!-- Dark Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/pages/dashboard.html" class="sidebar-brand">
+                <i class="bi bi-journal-text"></i>
+                Blog
+            </a>
         </div>
-    </nav>
-
-    <main>
-        <div class="container">
-            <div class="mb-3">
-                <a href="/pages/my-articles.html" class="btn btn-secondary">← ត្រឡប់ក្រោយ</a>
+        
+        <nav class="sidebar-menu">
+            <div class="sidebar-section-title">ADMIN</div>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="/pages/dashboard.html" class="nav-link">
+                        <i class="bi bi-speedometer2"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="has-submenu open">
+                    <a href="#" class="nav-link submenu-toggle" onclick="toggleSubmenu(event)">
+                        <span><i class="bi bi-file-text"></i> My Article</span>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="/pages/articles.html" class="nav-link">All Articles</a></li>
+                        <li><a href="/pages/create-article.html" class="nav-link active">Create Article</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/pages/categories.html" class="nav-link">
+                        <i class="bi bi-tags"></i>
+                        Categories
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link logout" onclick="handleLogout(event)">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <nav class="top-navbar">
+            <button class="navbar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="user-dropdown">
+                <img src="https://ui-avatars.com/api/?name=User&background=4299e1&color=fff" alt="User Avatar" class="user-avatar" id="userAvatar">
+                <div class="user-info">
+                    <div class="user-name" id="userName">Loading...</div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Page Content -->
+        <div class="container-fluid p-4">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 fw-bold mb-1" id="pageTitle">Create Article</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="/pages/dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/pages/articles.html" class="text-decoration-none">Articles</a></li>
+                            <li class="breadcrumb-item active" aria-current="page" id="breadcrumbTitle">Create</li>
+                        </ol>
+                    </nav>
+                </div>
+                <a href="/pages/articles.html" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back
+                </a>
             </div>
             
-            <div class="card">
-                <div class="card-header">
-                    <h2 id="pageTitle">បង្កើតអត្ថបទថ្មី</h2>
-                </div>
-                <div class="card-body">
-                    <form id="articleForm">
-                        <input type="hidden" id="articleId">
-                        
-                        <!-- Thumbnail Upload -->
-                        <div class="form-group">
-                            <label class="form-label">រូបភាពអត្ថបទ</label>
-                            <div id="thumbnailPreview" style="display: none;">
-                                <img id="thumbnailImage" src="" alt="Thumbnail" style="max-width: 300px; max-height: 200px; border-radius: var(--border-radius); margin-bottom: 1rem;">
-                                <div>
-                                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteThumbnail()">🗑️ លុបរូបភាព</button>
+            <!-- Article Form -->
+            <div class="row">
+                <div class="col-12 col-lg-8 mx-auto">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <form id="articleForm" class="needs-validation" novalidate>
+                                <input type="hidden" id="articleId">
+                                
+                                <!-- Title -->
+                                <div class="mb-4">
+                                    <label for="title" class="form-label fw-semibold">
+                                        Title <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="title" 
+                                           placeholder="Enter article title" 
+                                           required>
+                                    <div class="invalid-feedback" id="titleError">
+                                        Please enter a title.
+                                    </div>
                                 </div>
-                            </div>
-                            <input type="file" id="thumbnailInput" accept="image/*" class="form-control" onchange="previewThumbnail(event)">
-                            <span class="form-text">អត្ថបទអតិបរមា 5MB (JPG, PNG, GIF)</span>
+                                
+                                <!-- Category -->
+                                <div class="mb-4">
+                                    <label for="categoryId" class="form-label fw-semibold">
+                                        Category <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select form-select-lg" id="categoryId" required>
+                                        <option value="">Select category</option>
+                                    </select>
+                                    <div class="invalid-feedback" id="categoryError">
+                                        Please select a category.
+                                    </div>
+                                </div>
+                                
+                                <!-- Thumbnail -->
+                                <div class="mb-4">
+                                    <label for="thumbnailInput" class="form-label fw-semibold">
+                                        Thumbnail
+                                    </label>
+                                    
+                                    <!-- Image Preview -->
+                                    <div id="thumbnailPreview" style="display: none;" class="mb-3">
+                                        <div class="position-relative d-inline-block">
+                                            <img id="thumbnailImage" 
+                                                 src="" 
+                                                 alt="Thumbnail preview" 
+                                                 class="img-thumbnail" 
+                                                 style="max-width: 100%; max-height: 300px; object-fit: cover;">
+                                            <button type="button" 
+                                                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" 
+                                                    onclick="deleteThumbnail()"
+                                                    title="Remove image">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- File Input -->
+                                    <input type="file" 
+                                           class="form-control" 
+                                           id="thumbnailInput" 
+                                           accept="image/*"
+                                           onchange="previewThumbnail(event)">
+                                    <div class="form-text">
+                                        Maximum file size: 5MB. Supported formats: JPG, PNG, GIF
+                                    </div>
+                                </div>
+                                
+                                <!-- Content -->
+                                <div class="mb-4">
+                                    <label for="content" class="form-label fw-semibold">
+                                        Content <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control" 
+                                              id="content" 
+                                              rows="12" 
+                                              placeholder="Write your article content here..." 
+                                              required></textarea>
+                                    <div class="invalid-feedback" id="contentError">
+                                        Please enter article content.
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                    <a href="/pages/articles.html" class="btn btn-outline-secondary btn-lg">
+                                        <i class="bi bi-x-circle me-2"></i>Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-dark btn-lg" id="saveBtn">
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        <span id="saveBtnText">Publish</span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="title" class="form-label">ចំណងជើង *</label>
-                            <input type="text" id="title" class="form-control" placeholder="បញ្ចូលចំណងជើងអត្ថបទ" required>
-                            <span class="invalid-feedback" id="titleError"></span>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="categoryId" class="form-label">ប្រភេទ *</label>
-                            <select id="categoryId" class="form-control" required>
-                                <option value="">ជ្រើសរើសប្រភេទ</option>
-                            </select>
-                            <span class="invalid-feedback" id="categoryError"></span>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="content" class="form-label">មាតិកា *</label>
-                            <textarea id="content" class="form-control" rows="15" placeholder="សរសេរមាតិកាអត្ថបទ..." required></textarea>
-                            <span class="invalid-feedback" id="contentError"></span>
-                        </div>
-                        
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-lg" id="saveBtn">
-                                💾 រក្សាទុក
-                            </button>
-                            <a href="/pages/my-articles.html" class="btn btn-secondary btn-lg">បោះបង់</a>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Blog Management System. All rights reserved.</p>
-        </div>
-    </footer>
-
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
+    
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
     <script src="../js/config.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     
     <script>
-        function toggleMenu() {
-            document.getElementById('navbarMenu').classList.toggle('active');
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
         }
         
+        // Submenu toggle
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parent = event.currentTarget.closest('.has-submenu');
+            parent.classList.toggle('open');
+        }
+        
+        // Handle logout
+        async function handleLogout(event) {
+            event.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                logout();
+            }
+        }
+        
+        // Variables
         let currentArticleId = null;
         let thumbnailFile = null;
         let existingThumbnail = null;
+        let isEditMode = false;
+        
+        // Show toast notification
+        function showNotification(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastId = 'toast-' + Date.now();
+            
+            const bgColor = type === 'success' ? 'bg-success' : 
+                           type === 'error' ? 'bg-danger' : 
+                           type === 'warning' ? 'bg-warning' : 'bg-info';
+            
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white ${bgColor} border-0`;
+            toast.id = toastId;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
         
         // Load categories for dropdown
         async function loadCategories() {
@@ -114,12 +282,13 @@
                     const options = response.data.map(category => 
                         `<option value="${category.id}">${sanitizeHTML(category.name)}</option>`
                     ).join('');
-                    select.innerHTML = '<option value="">ជ្រើសរើសប្រភេទ</option>' + options;
+                    select.innerHTML = '<option value="">Select category</option>' + options;
                 } else {
-                    showToast('សូមបង្កើតប្រភេទជាមុនសិន', 'warning');
+                    showNotification('Please create categories first', 'warning');
                 }
             } catch (error) {
                 console.error('Load categories error:', error);
+                showNotification('Failed to load categories', 'error');
             }
         }
         
@@ -128,7 +297,14 @@
             try {
                 const article = await articlesAPI.getById(articleId);
                 
-                document.getElementById('pageTitle').textContent = 'កែសម្រួលអត្ថបទ';
+                // Update UI for edit mode
+                isEditMode = true;
+                document.getElementById('pageTitle').textContent = 'Edit Article';
+                document.getElementById('breadcrumbTitle').textContent = 'Edit';
+                document.getElementById('saveBtnText').textContent = 'Update';
+                document.title = 'Edit Article - Blog Management System';
+                
+                // Populate form
                 document.getElementById('articleId').value = article.id;
                 document.getElementById('title').value = article.title;
                 document.getElementById('categoryId').value = article.categoryId;
@@ -141,7 +317,7 @@
                     document.getElementById('thumbnailPreview').style.display = 'block';
                 }
             } catch (error) {
-                showToast('មិនអាចទាញយកអត្ថបទបាន', 'error');
+                showNotification('Failed to load article', 'error');
                 console.error('Load article error:', error);
             }
         }
@@ -153,13 +329,15 @@
             
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                showToast('សូមជ្រើសរើសរូបភាព', 'error');
+                showNotification('Please select an image file', 'error');
+                event.target.value = '';
                 return;
             }
             
             // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
-                showToast('រូបភាពធំពេក (អតិបរមា 5MB)', 'error');
+                showNotification('Image is too large. Maximum size is 5MB', 'error');
+                event.target.value = '';
                 return;
             }
             
@@ -180,17 +358,17 @@
             
             if (articleId && existingThumbnail) {
                 // Delete from server
-                showConfirmation('តើអ្នកពិតជាចង់លុបរូបភាពនេះមែនទេ?', async () => {
+                if (confirm('Are you sure you want to delete this thumbnail?')) {
                     try {
                         await articlesAPI.deleteThumbnail(articleId);
-                        showToast('លុបរូបភាពជោគជ័យ', 'success');
+                        showNotification('Thumbnail deleted successfully', 'success');
                         existingThumbnail = null;
                         document.getElementById('thumbnailPreview').style.display = 'none';
                         document.getElementById('thumbnailInput').value = '';
                     } catch (error) {
-                        showToast(error.message || 'មិនអាចលុបរូបភាពបាន', 'error');
+                        showNotification(error.message || 'Failed to delete thumbnail', 'error');
                     }
-                });
+                }
             } else {
                 // Just clear preview
                 thumbnailFile = null;
@@ -203,39 +381,33 @@
         document.getElementById('articleForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Clear errors
-            document.getElementById('titleError').textContent = '';
-            document.getElementById('categoryError').textContent = '';
-            document.getElementById('contentError').textContent = '';
+            // Get form
+            const form = e.target;
+            
+            // Validate form
+            if (!form.checkValidity()) {
+                e.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
             
             const articleId = document.getElementById('articleId').value;
             const title = document.getElementById('title').value.trim();
             const categoryId = document.getElementById('categoryId').value;
             const content = document.getElementById('content').value.trim();
             
-            // Validation
-            let hasError = false;
-            
-            if (!title) {
-                document.getElementById('titleError').textContent = 'សូមបញ្ចូលចំណងជើង';
-                hasError = true;
+            // Additional validation
+            if (!title || !categoryId || !content) {
+                form.classList.add('was-validated');
+                return;
             }
-            
-            if (!categoryId) {
-                document.getElementById('categoryError').textContent = 'សូមជ្រើសរើសប្រភេទ';
-                hasError = true;
-            }
-            
-            if (!content) {
-                document.getElementById('contentError').textContent = 'សូមបញ្ចូលមាតិកា';
-                hasError = true;
-            }
-            
-            if (hasError) return;
             
             const saveBtn = document.getElementById('saveBtn');
+            const saveBtnText = document.getElementById('saveBtnText');
+            const originalText = saveBtnText.textContent;
+            
             saveBtn.disabled = true;
-            saveBtn.textContent = 'កំពុងរក្សាទុក...';
+            saveBtnText.textContent = 'Saving...';
             
             try {
                 let savedArticleId = articleId;
@@ -247,7 +419,7 @@
                         categoryId: parseInt(categoryId),
                         content
                     });
-                    showToast('កែសម្រួលអត្ថបទជោគជ័យ', 'success');
+                    showNotification('Article updated successfully', 'success');
                 } else {
                     const response = await articlesAPI.create({
                         title,
@@ -255,7 +427,7 @@
                         content
                     });
                     savedArticleId = response.id;
-                    showToast('បង្កើតអត្ថបទជោគជ័យ', 'success');
+                    showNotification('Article created successfully', 'success');
                 }
                 
                 // Upload thumbnail if selected
@@ -263,32 +435,57 @@
                     try {
                         await articlesAPI.uploadThumbnail(savedArticleId, thumbnailFile);
                     } catch (error) {
-                        showToast('អត្ថបទត្រូវបានរក្សា ប៉ុន្តែមិនអាចបញ្ចូលរូបភាពបាន', 'warning');
+                        showNotification('Article saved but failed to upload thumbnail', 'warning');
                     }
                 }
                 
                 // Redirect
                 setTimeout(() => {
-                    window.location.href = '/pages/my-articles.html';
+                    window.location.href = '/pages/articles.html';
                 }, 1000);
             } catch (error) {
-                showToast(error.message || 'មិនអាចរក្សាទុកបាន', 'error');
+                showNotification(error.message || 'Failed to save article', 'error');
                 saveBtn.disabled = false;
-                saveBtn.textContent = '💾 រក្សាទុក';
+                saveBtnText.textContent = originalText;
             }
         });
         
         // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadCategories();
-            
-            // Check if editing
-            const articleId = getQueryParam('id');
-            if (articleId) {
-                currentArticleId = articleId;
-                loadArticleForEdit(articleId);
+        async function initializePage() {
+            try {
+                // Check authentication
+                if (!isAuthenticated()) {
+                    window.location.href = '/index.html';
+                    return;
+                }
+                
+                // Load user info
+                const userData = getUserData();
+                if (userData) {
+                    const fullName = `${userData.firstName} ${userData.lastName}`;
+                    document.getElementById('userName').textContent = fullName;
+                    
+                    // Update avatar
+                    const avatar = document.getElementById('userAvatar');
+                    avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=4299e1&color=fff`;
+                }
+                
+                // Load categories
+                await loadCategories();
+                
+                // Check if editing
+                const articleId = getQueryParam('id');
+                if (articleId) {
+                    currentArticleId = articleId;
+                    await loadArticleForEdit(articleId);
+                }
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showNotification('Failed to initialize page', 'error');
             }
-        });
+        }
+        
+        document.addEventListener('DOMContentLoaded', initializePage);
     </script>
 </body>
 </html>
