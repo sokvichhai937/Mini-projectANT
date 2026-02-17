@@ -39,14 +39,14 @@
                         <span><i class="bi bi-file-text"></i> My Article</span>
                     </a>
                     <ul class="submenu">
-                        <li><a href="/pages/articles.html" class="nav-link">All Article</a></li>
+                        <li><a href="/pages/articles.html" class="nav-link">All Articles</a></li>
                         <li><a href="/pages/create-article.html" class="nav-link">Create Article</a></li>
                     </ul>
                 </li>
                 <li>
                     <a href="/pages/categories.html" class="nav-link">
                         <i class="bi bi-tags"></i>
-                        Category
+                        Categories
                     </a>
                 </li>
                 <li>
@@ -227,7 +227,7 @@
         async function loadDashboard() {
             try {
                 // Check authentication
-                if (!isLoggedIn()) {
+                if (!isAuthenticated()) {
                     window.location.href = '/index.html';
                     return;
                 }

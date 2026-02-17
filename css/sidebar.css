@@ -116,7 +116,8 @@
 }
 
 .sidebar-nav .submenu-toggle::after {
-    content: '▼';
+    content: '\F282'; /* Bootstrap Icons chevron-down */
+    font-family: 'bootstrap-icons';
     font-size: 0.75rem;
     transition: transform 0.3s ease;
 }
